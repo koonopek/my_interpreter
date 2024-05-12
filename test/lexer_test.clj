@@ -125,5 +125,18 @@
                                  {:type :SEMICOLON}
                                  {:type :EOF}]))))
 
+(def infinite-program (apply str (repeat 1 "let x = 5; ")))
+;; (print (time (take 2 (tokenize infinite-program))))
+
+
+;; (let [iterator (.iterator (tokenize infinite-program))]
+;;   (print (.next iterator))
+;;   (print  (.peek iterator))
+;;   (print (.next iterator)))
+
+
+;; ((deftest test-parse-let-statment
+;;    (testing "Parsing let statment"
+;;      (is (= (parse (tokenize "let x = 5;")) [])))))
 
 
