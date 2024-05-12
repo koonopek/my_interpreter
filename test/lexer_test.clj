@@ -125,8 +125,26 @@
                                  {:type :SEMICOLON}
                                  {:type :EOF}]))))
 
-(def infinite-program (apply str (repeat 1 "let x = 5; ")))
-;; (print (time (take 2 (tokenize infinite-program))))
+(def infinite-program (apply str (repeat 1000 "let x = 5; ")))
+(print (time (take 2 (tokenize infinite-program))))
+
+
+(print (time (tokenize "let five = 5;
+                     let ten = 10;
+
+                     let add = fn (x, y) {x + y;
+                     };
+
+                     let result = add (five, ten);
+                     !-/*5;
+                     5 < 10 > 5;
+
+                     if (5 < 10) {return true;
+                                  }else {return false;
+                                         }
+
+                     10 == 10;
+                     10 != 9;")))
 
 
 ;; (let [iterator (.iterator (tokenize infinite-program))]
