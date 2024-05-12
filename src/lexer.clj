@@ -55,22 +55,29 @@
 
 (defn consume-whitespaces [string] (consume-x string is-whitespace? :IGNORE))
 
-(defn tokenize-iter [characters]
+(defn parse-token [iterator]
+  (cond
+    (nil? (.peek-char iterator)) {:type :EOF}
+
+    (contains? double-char-to-token (take 2 (.get-coll iterator))) {:type (get double-char-to-token (.read-n-char  iterator 2))}
+
+    (contains? char-to-token (.peek-char iterator)) {:type (get char-to-token (.read-char iterator))}
+
+    (is-whitespace? (.peek-char iterator))  (do (consume-whitespaces iterator) (parse-token iterator))
+
+    (is-letter? (.peek-char iterator)) (consume-letters iterator)
+
+    (is-digit? (.peek-char iterator)) (consume-digits iterator)
+
+    :else (throw (Exception. (str "Unknown char: '" (.peek-char iterator) "'")))))
+
+
+(defn tokenize-iter [iterator]
   (loop [result []]
-    (cond
-      (nil? (.peek-char characters)) (conj result {:type :EOF})
-
-      (contains? double-char-to-token (take 2 (.get-coll characters))) (recur  (conj result {:type (get double-char-to-token (.read-n-char  characters 2))}))
-
-      (contains? char-to-token (.peek-char characters)) (recur  (conj result {:type (get char-to-token (.read-char characters))}))
-
-      (is-whitespace? (.peek-char characters))  (recur  (let [_ (consume-whitespaces characters)] result))
-
-      (is-letter? (.peek-char characters)) (recur (conj result (consume-letters characters)))
-
-      (is-digit? (.peek-char characters)) (recur (conj result (consume-digits characters)))
-
-      :else (throw (Exception. (str "Unknown char: '" (.peek-char characters) "'"))))))
+    (let [next-token (parse-token iterator)]
+      (if (= (:type next-token) :EOF)
+        (conj result next-token)
+        (recur (conj result next-token))))))
 
 (defn tokenize [string] (tokenize-iter (to-iter (vec string))))
 

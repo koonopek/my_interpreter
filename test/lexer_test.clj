@@ -2,7 +2,8 @@
   (:require
    [clojure.test :refer :all]
    [clojure.string]
-   [lexer :refer :all]))
+   [lexer :refer :all]
+   [iter :refer :all]))
 
 (defn compare-arrays [arr1 arr2]
   (let [diffs (filter #(not= (arr1 %) (arr2 %))
@@ -125,26 +126,24 @@
                                  {:type :SEMICOLON}
                                  {:type :EOF}]))))
 
-(def infinite-program (apply str (repeat 1000 "let x = 5; ")))
-(print (time (take 2 (tokenize infinite-program))))
 
 
-(print (time (tokenize "let five = 5;
-                     let ten = 10;
+;; (print (time (tokenize "let five = 5;
+;;                      let ten = 10;
 
-                     let add = fn (x, y) {x + y;
-                     };
+;;                      let add = fn (x, y) {x + y;
+;;                      };
 
-                     let result = add (five, ten);
-                     !-/*5;
-                     5 < 10 > 5;
+;;                      let result = add (five, ten);
+;;                      !-/*5;
+;;                      5 < 10 > 5;
 
-                     if (5 < 10) {return true;
-                                  }else {return false;
-                                         }
+;;                      if (5 < 10) {return true;
+;;                                   }else {return false;
+;;                                          }
 
-                     10 == 10;
-                     10 != 9;")))
+;;                      10 == 10;
+;;                      10 != 9;")))
 
 
 ;; (let [iterator (.iterator (tokenize infinite-program))]
@@ -156,5 +155,3 @@
 ;; ((deftest test-parse-let-statment
 ;;    (testing "Parsing let statment"
 ;;      (is (= (parse (tokenize "let x = 5;")) [])))))
-
-
